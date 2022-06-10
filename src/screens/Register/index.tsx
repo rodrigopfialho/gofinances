@@ -21,7 +21,7 @@ interface FormData {
 }
 
 type NavigationProps = {
-    navigate:(sreen:string) => void
+    navigate: (sreen: string) => void
 }
 
 const schema = Yup.object().shape({
@@ -30,10 +30,10 @@ const schema = Yup.object().shape({
 })
 
 export function Register() {
-    
+
     const [transactionType, setTransactiontype] = useState('');
     const [categoryModalOpen, setCategoryModalOpen] = useState(false);
- 
+    // const dataKey  = '@gofinances:transactions';
 
     const [category, setCategory] = useState({
         key: 'category',
@@ -46,12 +46,12 @@ export function Register() {
         control,
         handleSubmit,
         reset,
-        formState: {errors}
+        formState: { errors }
     } = useForm({
         resolver: yupResolver(schema)
     });
 
-    function handleTransactionsTypeSelect(type: 'up' | 'down') {
+    function handleTransactionsTypeSelect(type: 'positive' | 'negative') {
         setTransactiontype(type)
     }
 
@@ -64,24 +64,24 @@ export function Register() {
     }
 
     async function handleRegister(form: FormData) {
-        if(!transactionType) 
+        if (!transactionType)
             return Alert.alert('Selecione o tipo da transação');
 
-        if(category.key === 'category')   
-            return Alert.alert ('Selecione a categoria')
-        
+        if (category.key === 'category')
+            return Alert.alert('Selecione a categoria')
+
         const newTransaction = {
             id: String(uuid.v4()),
             name: form.name,
             amount: form.amount,
-            transactionType,
+            type: transactionType,
             category: category.key,
             date: new Date()
         }
 
         try {
-            const dataKey  = '@gofinances:transactions';
-            
+            const dataKey = '@gofinances:transactions';
+
             const data = await AsyncStorage.getItem(dataKey);
             const currentData = data ? JSON.parse(data) : [];
 
@@ -101,18 +101,18 @@ export function Register() {
 
             navigation.navigate('Listagem');
 
-        } catch (error){
+        } catch (error) {
             console.log(error)
             Alert.alert('Não foi possível salvar')
         }
     }
 
     // useEffect(() => {
-        // async function loadData() {
-        //    const data = await AsyncStorage.getItem(dataKey);
-        //    console.log(JSON.parse(data!))
-        // }
-        // loadData()
+    // async function loadData() {
+    //    const data = await AsyncStorage.getItem(dataKey);
+    //    console.log(JSON.parse(data!))
+    // }
+    // loadData()
 
     //     async function removeAll() {
     //         await AsyncStorage.removeItem(dataKey)
@@ -150,19 +150,19 @@ export function Register() {
 
                         <TransactionsTypes>
                             <TransactionTypeButton
+                                title="Entrada"
                                 type="up"
-                                title="Income"
-                                onPress={() => handleTransactionsTypeSelect('up')}
-                                isActive={transactionType === 'up'}
+                                onPress={() => handleTransactionsTypeSelect('positive')}
+                                isActive={transactionType === 'positive'}
                             />
                             <TransactionTypeButton
                                 type="down"
-                                title="Outcome"
-                                onPress={() => handleTransactionsTypeSelect('down')}
-                                isActive={transactionType === 'down'}
+                                title="Saida"
+                                onPress={() => handleTransactionsTypeSelect('negative')}
+                                isActive={transactionType === 'negative'}
                             />
                         </TransactionsTypes>
-                        
+
                         <CategorySelectButton
                             title={category.name}
                             onPress={handleOpenSelectCategoryModal}
@@ -170,8 +170,8 @@ export function Register() {
                     </Fields>
                     <Button
                         title="Enviar"
-                        onPress={ handleSubmit(handleRegister)}
-                        
+                        onPress={handleSubmit(handleRegister)}
+
                     />
                 </Form>
 
