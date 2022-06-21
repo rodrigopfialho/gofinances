@@ -8,7 +8,12 @@ import {ThemeProvider} from 'styled-components'
 
 import { NavigationContainer } from '@react-navigation/native';
 import { AppRoutes } from './src/routes/app.routes';
-import { Register } from './src/screens/Register';
+
+import theme from './src/global/styles/theme';
+import { StatusBar } from 'react-native';
+import { SignIn } from './src/screens/Signin';
+
+import { AuthProvider } from './src/hooks/auth';
 
 import {
   useFonts,
@@ -17,9 +22,7 @@ import {
   Poppins_700Bold,
 } from '@expo-google-fonts/poppins'
 
-import theme from './src/global/styles/theme';
-import { StatusBar } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
 
 export default function App() {
   SplashScreen.preventAutoHideAsync()
@@ -36,10 +39,12 @@ export default function App() {
   SplashScreen.hideAsync()
 
   return (
-    // <GestureHandlerRootView style={{flex: 1}}>
       <ThemeProvider theme={theme}>
         <NavigationContainer>
-          <AppRoutes />
+          {/* <AppRoutes /> */}
+        <AuthProvider>
+          <SignIn />
+        </AuthProvider>
 
           <StatusBar 
             animated={true}
@@ -49,7 +54,6 @@ export default function App() {
           />
         </NavigationContainer>
       </ThemeProvider>
-    // </GestureHandlerRootView> 
   );
 }
 

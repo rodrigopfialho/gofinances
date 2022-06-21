@@ -31,6 +31,7 @@ export interface DataListProps extends TransactionCardProps {
 
 interface HighLightProps {
     amount: string;
+    lastTransaction: string;
 }
 
 interface HighLightData {
@@ -45,6 +46,19 @@ export function Dashboard() {
     const [highLightData, setHighLightData] = useState<HighLightData>({} as HighLightData)
 
     const theme = useTheme()
+
+    function getLastTransactionDate(
+        collection: DataListProps[], 
+        type: 'positive' | 'negative'
+        ){
+        const lastTransactions = new Date(
+        Math.max.apply(Math, collection
+            .filter(transaction => transaction.type === type)
+            .map(transaction => new Date(transaction.date).getTime())))
+            
+       return `${lastTransactions.getDate()} de ${lastTransactions.toLocaleDateString('pt-BR', {month: 'long'})}`    
+        
+    }
 
     async function loadTransactions() {
         const dataKey = '@gofinances:transactions';
@@ -64,7 +78,7 @@ export function Dashboard() {
                 }
 
                 const amount = Number(item.amount)
-                    .toLocaleString('pt-BR', {
+                    .toLocaleString('pt-BR' , {
                         style: 'currency',
                         currency: 'BRL'
                     });
@@ -88,6 +102,10 @@ export function Dashboard() {
 
         setTransactions(transactionsFormatted);
 
+        const lastTransactionsEntries = getLastTransactionDate(transactions, 'positive')
+        const lastTransactionsExpensives = getLastTransactionDate(transactions, 'negative')
+        const totalInterval  = `01 a ${lastTransactionsExpensives}` ;
+
         const total = entriesTotal - expensiveTotal
 
         setHighLightData({
@@ -95,24 +113,27 @@ export function Dashboard() {
                 amount: entriesTotal.toLocaleString('pt-BR', {
                     style: 'currency',
                     currency: 'BRL'
-                })
+                }),
+                lastTransaction: `Última entrada dia ${lastTransactionsEntries}`,
             },
             expensive: {
                 amount: expensiveTotal.toLocaleString('pt-BR', {
                     style: 'currency',
                     currency: 'BRL'
-                })
+                }),
+                lastTransaction: `Última saída dia${lastTransactionsExpensives}`,
             },
             total: {
                 amount: total.toLocaleString('pt-BR', {
                     style: 'currency',
-                    currency: 'BRL'
-                })
+                    currency: 'BRL',
+                }),
+                lastTransaction: totalInterval
             }
 
         })
 
-        console.log(transactionsFormatted)
+        // console.log(transactionsFormatted)
         setisLoading(false)
     }
 
@@ -162,22 +183,22 @@ export function Dashboard() {
                         <HighlighCard
                             type="up"
                             title="Entradas"
-                            amount={highLightData.entries.amount}
-                            lastTransaction="Última entrada dia 13 de abril"
+                            amount={ highLightData.entries.amount }
+                            lastTransaction={highLightData.entries.lastTransaction}
                         />
 
                         <HighlighCard
                             type="down"
                             title="Saída"
                             amount={highLightData.expensive.amount}
-                            lastTransaction="Última saída dia 03 de abril"
+                            lastTransaction={highLightData.expensive.lastTransaction}
                         />
 
                         <HighlighCard
                             type="total"
                             title="Total"
                             amount={highLightData.total.amount}
-                            lastTransaction="01 à 16 de abril"
+                            lastTransaction={highLightData.total.lastTransaction}
                         />
                     </HighlightCards>
 
