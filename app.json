@@ -4,12 +4,14 @@
   "expo": {
     "name": "gofinances",
     "slug": "gofinances",
+    "scheme": "gofinances",
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
     ],
     "plugins": [
-      "expo-splash-screen"
+      "expo-splash-screen",
+      "expo-apple-authentication"
     ]
   }
 }

@@ -6,12 +6,12 @@ import 'react-native-gesture-handler';
 
 import {ThemeProvider} from 'styled-components'
 
-import { NavigationContainer } from '@react-navigation/native';
-import { AppRoutes } from './src/routes/app.routes';
+import { Routes } from './src/routes';
+
+import { LogBox } from "react-native";
 
 import theme from './src/global/styles/theme';
 import { StatusBar } from 'react-native';
-import { SignIn } from './src/screens/Signin';
 
 import { AuthProvider } from './src/hooks/auth';
 
@@ -22,7 +22,7 @@ import {
   Poppins_700Bold,
 } from '@expo-google-fonts/poppins'
 
-
+LogBox.ignoreLogs(["EventEmitter.removeListener"]);
 
 export default function App() {
   SplashScreen.preventAutoHideAsync()
@@ -40,10 +40,10 @@ export default function App() {
 
   return (
       <ThemeProvider theme={theme}>
-        <NavigationContainer>
+
           {/* <AppRoutes /> */}
         <AuthProvider>
-          <SignIn />
+          <Routes />
         </AuthProvider>
 
           <StatusBar 
@@ -52,7 +52,7 @@ export default function App() {
             barStyle={'light-content'}
             backgroundColor = {theme.colors.primary}
           />
-        </NavigationContainer>
+       
       </ThemeProvider>
   );
 }
