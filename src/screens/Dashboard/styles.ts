@@ -3,7 +3,6 @@ import { FlatList, FlatListProps } from "react-native";
 import {Feather} from '@expo/vector-icons'
 import {RFPercentage, RFValue} from 'react-native-responsive-fontsize'
 import {getBottomSpace, getStatusBarHeight} from 'react-native-iphone-x-helper'
-import { BorderlessButton } from "react-native-gesture-handler";
 
 import {DataListProps} from '.'
 
@@ -62,7 +61,7 @@ font-size: ${RFValue(18)}px;
 font-family: ${({theme}) => theme.fonts.bold};
 `;
 
-export const LogoutButton = styled(BorderlessButton as new(props: any) => BorderlessButton)``;
+export const LogoutButton = styled.TouchableOpacity``;
 
 export const Icon = styled(Feather)`
     color: ${({theme}) => theme.colors.secondary};
